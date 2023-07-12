@@ -28,8 +28,10 @@ namespace Google\Cloud\Samples\Dlp;
 use Google\Cloud\Dlp\V2\Action;
 use Google\Cloud\Dlp\V2\Action\PublishToPubSub;
 use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
 use Google\Cloud\Dlp\V2\DatastoreOptions;
 use Google\Cloud\Dlp\V2\DlpJob\JobState;
+use Google\Cloud\Dlp\V2\GetDlpJobRequest;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
 use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
@@ -119,9 +121,10 @@ function inspect_datastore(
 
     // Submit request
     $parent = "projects/$callingProjectId/locations/global";
-    $job = $dlp->createDlpJob($parent, [
-        'inspectJob' => $inspectJob
-    ]);
+    $request = (new CreateDlpJobRequest())
+        ->setParent($parent)
+        ->setInspectJob($inspectJob);
+    $job = $dlp->createDlpJob($request);
 
     // Poll Pub/Sub using exponential backoff until job finishes
     // Consider using an asynchronous execution model such as Cloud Functions
@@ -134,7 +137,8 @@ function inspect_datastore(
                 $subscription->acknowledge($message);
                 // Get the updated job. Loop to avoid race condition with DLP API.
                 do {
-                    $job = $dlp->getDlpJob(new GetDlpJobRequest(['name' => $job->getName()]));
+                    $request2 = (new GetDlpJobRequest());
+                    $job = $dlp->getDlpJob($request2);
                 } while ($job->getState() == JobState::RUNNING);
                 break 2; // break from parent do while
             }
