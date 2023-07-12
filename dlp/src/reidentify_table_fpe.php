@@ -26,7 +26,7 @@ namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_reidentify_table_fpe]
 
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
 use Google\Cloud\Dlp\V2\PrimitiveTransformation;
 use Google\Cloud\Dlp\V2\DeidentifyConfig;
 use Google\Cloud\Dlp\V2\ContentItem;

@@ -27,7 +27,8 @@ namespace Google\Cloud\Samples\Dlp;
 use Google\Cloud\Dlp\V2\CryptoReplaceFfxFpeConfig;
 use Google\Cloud\Dlp\V2\CryptoReplaceFfxFpeConfig\FfxCommonNativeAlphabet;
 use Google\Cloud\Dlp\V2\CryptoKey;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\DeidentifyContentRequest;
 use Google\Cloud\Dlp\V2\PrimitiveTransformation;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\DeidentifyConfig;
@@ -115,13 +116,15 @@ function deidentify_free_text_with_fpe_using_surrogate(
         ->setMinLikelihood(likelihood::UNLIKELY)
         ->setInfoTypes($infoTypes);
 
+    // Build request
+    $request = (new DeidentifyContentRequest())
+        ->setParent($parent)
+        ->setDeidentifyConfig($deidentifyConfig)
+        ->setItem($content)
+        ->setInspectConfig($inspectConfig);
+
     // Run request.
-    $response = $dlp->deidentifyContent([
-        'parent' => $parent,
-        'deidentifyConfig' => $deidentifyConfig,
-        'item' => $content,
-        'inspectConfig' => $inspectConfig
-    ]);
+    $response = $dlp->deidentifyContent($request);
 
     // Print the results.
     printf($response->getItem()->getValue());

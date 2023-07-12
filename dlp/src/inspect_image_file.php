@@ -24,7 +24,8 @@
 namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_inspect_image_file]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\InspectContentRequest;
 use Google\Cloud\Dlp\V2\ContentItem;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
@@ -60,12 +61,14 @@ function inspect_image_file(string $projectId, string $filepath): void
         // Whether to include the matching string
         ->setIncludeQuote(true);
 
+    // Build request
+    $request = (new InspectContentRequest())
+        ->setParent($parent)
+        ->setInspectConfig($inspectConfig)
+        ->setItem($item);
+
     // Run request
-    $response = $dlp->inspectContent([
-        'parent' => $parent,
-        'inspectConfig' => $inspectConfig,
-        'item' => $item
-    ]);
+    $response = $dlp->inspectContent($request);
 
     // Print the results
     $findings = $response->getResult()->getFindings();

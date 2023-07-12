@@ -25,7 +25,8 @@
 namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_create_trigger]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateJobTriggerRequest;
 use Google\Cloud\Dlp\V2\JobTrigger;
 use Google\Cloud\Dlp\V2\JobTrigger\Trigger;
 use Google\Cloud\Dlp\V2\JobTrigger\Status;
@@ -126,10 +127,12 @@ function create_trigger(
         ->setDescription($description);
 
     // Run trigger creation request
-    $parent = "projects/$callingProjectId/locations/global";
-    $trigger = $dlp->createJobTrigger($parent, $jobTriggerObject, [
-        'triggerId' => $triggerId
-    ]);
+    $request = (new CreateJobTriggerRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setJobTrigger($jobTriggerObject)
+        ->setTriggerId($triggerId);
+
+    $trigger = $dlp->createJobTrigger($request);
 
     // Print results
     printf('Successfully created trigger %s' . PHP_EOL, $trigger->getName());

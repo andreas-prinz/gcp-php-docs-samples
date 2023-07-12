@@ -25,7 +25,9 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_categorical_stats]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
+use Google\Cloud\Dlp\V2\GetDlpJobRequest;
 use Google\Cloud\Dlp\V2\RiskAnalysisJobConfig;
 use Google\Cloud\Dlp\V2\BigQueryTable;
 use Google\Cloud\Dlp\V2\DlpJob\JobState;
@@ -94,11 +96,13 @@ function categorical_stats(
         ->setSourceTable($bigqueryTable)
         ->setActions([$action]);
 
+    // Build request
+    $request = (new CreateDlpJobRequest)
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setRiskJob($riskJob);
+
     // Submit request
-    $parent = "projects/$callingProjectId/locations/global";
-    $job = $dlp->createDlpJob($parent, [
-        'riskJob' => $riskJob
-    ]);
+    $job = $dlp->createDlpJob($request);
 
     // Listen for job notifications via an existing topic/subscription.
     $subscription = $topic->subscription($subscriptionId);
@@ -114,7 +118,7 @@ function categorical_stats(
                 $subscription->acknowledge($message);
                 // Get the updated job. Loop to avoid race condition with DLP API.
                 do {
-                    $job = $dlp->getDlpJob($job->getName());
+                    $job = $dlp->getDlpJob(new GetDlpJobRequest(['name' => $job->getName()]));
                 } while ($job->getState() == JobState::RUNNING);
                 break 2; // break from parent do while
             }

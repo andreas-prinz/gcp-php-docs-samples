@@ -28,7 +28,8 @@ namespace Google\Cloud\Samples\Dlp;
 use Google\Cloud\Dlp\V2\CryptoReplaceFfxFpeConfig;
 use Google\Cloud\Dlp\V2\CryptoReplaceFfxFpeConfig\FfxCommonNativeAlphabet;
 use Google\Cloud\Dlp\V2\CryptoKey;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\ReidentifyContentRequest;
 use Google\Cloud\Dlp\V2\PrimitiveTransformation;
 use Google\Cloud\Dlp\V2\KmsWrappedCryptoKey;
 use Google\Cloud\Dlp\V2\InfoType;
@@ -112,14 +113,14 @@ function reidentify_fpe(
     $item = (new ContentItem())
         ->setValue($string);
 
-    $parent = "projects/$callingProjectId/locations/global";
+    $request = (new ReidentifyContentRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setReidentifyConfig($reidentifyConfig)
+        ->setInspectConfig($inspectConfig)
+        ->setItem($item);
 
     // Run request
-    $response = $dlp->reidentifyContent($parent, [
-        'reidentifyConfig' => $reidentifyConfig,
-        'inspectConfig' => $inspectConfig,
-        'item' => $item
-    ]);
+    $response = $dlp->reidentifyContent($request);
 
     // Print the results
     $reidentifiedValue = $response->getItem()->getValue();

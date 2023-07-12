@@ -25,7 +25,7 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_inspect_datastore]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
 use Google\Cloud\Dlp\V2\DatastoreOptions;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\Action;
@@ -134,7 +134,7 @@ function inspect_datastore(
                 $subscription->acknowledge($message);
                 // Get the updated job. Loop to avoid race condition with DLP API.
                 do {
-                    $job = $dlp->getDlpJob($job->getName());
+                    $job = $dlp->getDlpJob(new GetDlpJobRequest(['name' => $job->getName()]));
                 } while ($job->getState() == JobState::RUNNING);
                 break 2; // break from parent do while
             }

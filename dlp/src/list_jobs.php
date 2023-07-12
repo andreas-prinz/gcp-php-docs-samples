@@ -25,7 +25,8 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_list_jobs]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\ListDlpJobsRequest;
 use Google\Cloud\Dlp\V2\DlpJob\JobState;
 use Google\Cloud\Dlp\V2\DlpJobType;
 
@@ -46,11 +47,11 @@ function list_jobs(string $callingProjectId, string $filter): void
     // Run job-listing request
     // For more information and filter syntax,
     // @see https://cloud.google.com/dlp/docs/reference/rest/v2/projects.dlpJobs/list
-    $parent = "projects/$callingProjectId/locations/global";
-    $response = $dlp->listDlpJobs($parent, [
-    'filter' => $filter,
-    'type' => $jobType
-    ]);
+    $request = (new ListDlpJobsRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setFilter($filter)
+        ->setType($jobType);
+    $response = $dlp->listDlpJobs($request);
 
     // Print job list
     $jobs = $response->iterateAllElements();

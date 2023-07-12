@@ -31,7 +31,8 @@ use Google\Cloud\Dlp\V2\ContentItem;
 use Google\Cloud\Dlp\V2\CryptoKey;
 use Google\Cloud\Dlp\V2\DateShiftConfig;
 use Google\Cloud\Dlp\V2\DeidentifyConfig;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\DeidentifyContentRequest;
 use Google\Cloud\Dlp\V2\FieldId;
 use Google\Cloud\Dlp\V2\FieldTransformation;
 use Google\Cloud\Dlp\V2\KmsWrappedCryptoKey;
@@ -152,14 +153,14 @@ function deidentify_dates(
     $deidentifyConfig = (new DeidentifyConfig())
         ->setRecordTransformations($recordTransformations);
 
-    $parent = "projects/$callingProjectId/locations/global";
+    // Build request
+    $request = (new DeidentifyContentRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setDeidentifyConfig($deidentifyConfig)
+        ->setItem($item);
 
     // Run request
-    $response = $dlp->deidentifyContent([
-        'parent' => $parent,
-        'deidentifyConfig' => $deidentifyConfig,
-        'item' => $item
-    ]);
+    $response = $dlp->deidentifyContent($request);
 
     // Check for errors
     foreach ($response->getOverview()->getTransformationSummaries() as $summary) {

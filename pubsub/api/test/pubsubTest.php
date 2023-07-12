@@ -369,7 +369,8 @@ class PubSubTest extends TestCase
         $messageData = uniqid('message-');
 
         $pid = shell_exec(
-            'php ' . __DIR__ . '/../vendor/bin/google-cloud-batch daemon > /dev/null 2>&1 & echo $!'
+            // 'php ' . __DIR__ . '/../vendor/bin/google-cloud-batch daemon > /dev/null 2>&1 & echo $!'
+            'php ' . __DIR__ . '/../vendor/bin/google-cloud-batch daemon > log.txt 2>&1 & echo $!'
         );
         putenv('IS_BATCH_DAEMON_RUNNING=true');
 

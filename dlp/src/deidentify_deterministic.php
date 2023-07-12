@@ -26,7 +26,8 @@ namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_deidentify_deterministic]
 
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\DeidentifyContentRequest;
 use Google\Cloud\Dlp\V2\PrimitiveTransformation;
 use Google\Cloud\Dlp\V2\DeidentifyConfig;
 use Google\Cloud\Dlp\V2\ContentItem;
@@ -107,14 +108,15 @@ function deidentify_deterministic(
     $deidentifyConfig = (new DeidentifyConfig())
         ->setInfoTypeTransformations($infoTypeTransformations);
 
-    // Send the request and receive response from the service.
-    $response = $dlp->deidentifyContent([
-        'parent' => $parent,
-        'deidentifyConfig' => $deidentifyConfig,
-        'item' => $content,
-        'inspectConfig' => $inspectConfig
+    // Build request
+    $request = (new DeidentifyContentRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setDeidentifyConfig($deidentifyConfig)
+        ->setItem($content)
+        ->setInspectConfig($inspectConfig);
 
-    ]);
+    // Send the request and receive response from the service.
+    $response = $dlp->deidentifyContent($request);
 
     // Print the results.
     printf($response->getItem()->getValue());

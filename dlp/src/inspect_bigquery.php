@@ -25,7 +25,9 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_inspect_bigquery]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
+use Google\Cloud\Dlp\V2\GetDlpJobRequest;
 use Google\Cloud\Dlp\V2\BigQueryOptions;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
@@ -112,11 +114,13 @@ function inspect_bigquery(
     // Listen for job notifications via an existing topic/subscription.
     $subscription = $topic->subscription($subscriptionId);
 
+    // Build request
+    $request = (new CreateDlpJobRequest)
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setInspectJob($inspectJob);
+
     // Submit request
-    $parent = "projects/$callingProjectId/locations/global";
-    $job = $dlp->createDlpJob($parent, [
-        'inspectJob' => $inspectJob
-    ]);
+    $job = $dlp->createDlpJob($request);
 
     // Poll Pub/Sub using exponential backoff until job finishes
     // Consider using an asynchronous execution model such as Cloud Functions
@@ -129,7 +133,7 @@ function inspect_bigquery(
                 $subscription->acknowledge($message);
                 // Get the updated job. Loop to avoid race condition with DLP API.
                 do {
-                    $job = $dlp->getDlpJob($job->getName());
+                    $job = $dlp->getDlpJob(new GetDlpJobRequest(['name' => $job->getName()]));
                 } while ($job->getState() == JobState::RUNNING);
                 break 2; // break from parent do while
             }

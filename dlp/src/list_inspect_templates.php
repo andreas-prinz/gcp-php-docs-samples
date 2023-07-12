@@ -25,7 +25,8 @@
 namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_list_inspect_templates]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\ListInspectTemplatesRequest;
 
 /**
  * List DLP inspection configuration templates.
@@ -37,10 +38,11 @@ function list_inspect_templates(string $callingProjectId): void
     // Instantiate a client.
     $dlp = new DlpServiceClient();
 
-    $parent = "projects/$callingProjectId/locations/global";
+    // Build request
+    $request = ListInspectTemplatesRequest::build("projects/$callingProjectId/locations/global");
 
     // Run request
-    $response = $dlp->listInspectTemplates($parent);
+    $response = $dlp->listInspectTemplates($request);
 
     // Print results
     $templates = $response->iterateAllElements();

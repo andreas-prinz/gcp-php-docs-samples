@@ -26,7 +26,8 @@ namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_deidentify_exception_list]
 use Google\Cloud\Dlp\V2\ContentItem;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\DeidentifyContentRequest;
 use Google\Cloud\Dlp\V2\CustomInfoType\Dictionary;
 use Google\Cloud\Dlp\V2\CustomInfoType\Dictionary\WordList;
 use Google\Cloud\Dlp\V2\InfoType;
@@ -99,14 +100,15 @@ function deidentify_exception_list(
                 ->setTransformations([$transformation])
         );
 
+    // Build request
+    $request = (new DeidentifyContentRequest())
+        ->setParent("projects/$callingProjectId/locations/global")
+        ->setDeidentifyConfig($deidentifyConfig)
+        ->setItem($contentItem)
+        ->setInspectConfig($inspectConfig);
+
     // Send the request and receive response from the service
-    $parent = "projects/$callingProjectId/locations/global";
-    $response = $dlp->deidentifyContent([
-        'parent' => $parent,
-        'deidentifyConfig' => $deidentifyConfig,
-        'inspectConfig' => $inspectConfig,
-        'item' => $contentItem
-    ]);
+    $response = $dlp->deidentifyContent($request);
 
     // Print the results
     printf('Text after replace with infotype config: %s', $response->getItem()->getValue());

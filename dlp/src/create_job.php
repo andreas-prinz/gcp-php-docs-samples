@@ -27,7 +27,8 @@ namespace Google\Cloud\Samples\Dlp;
 # [START dlp_create_job]
 use Google\Cloud\Dlp\V2\CloudStorageOptions;
 use Google\Cloud\Dlp\V2\CloudStorageOptions\FileSet;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
 use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
@@ -102,9 +103,7 @@ function create_job(
 
     // Send the job creation request and process the response.
     $parent = "projects/$callingProjectId/locations/global";
-    $job = $dlp->createDlpJob($parent, [
-        'inspectJob' => $inspectJobConfig
-    ]);
+    $job = $dlp->createDlpJob(CreateDlpJobRequest::build($parent, $inspectJobConfig));
 
     // Print results.
     printf($job->getName());

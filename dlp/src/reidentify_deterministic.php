@@ -26,7 +26,8 @@ namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_reidentify_deterministic]
 use Google\Cloud\Dlp\V2\CryptoKey;
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\ReidentifyContentRequest;
 use Google\Cloud\Dlp\V2\PrimitiveTransformation;
 use Google\Cloud\Dlp\V2\KmsWrappedCryptoKey;
 use Google\Cloud\Dlp\V2\InfoType;
@@ -105,12 +106,15 @@ function reidentify_deterministic(
     $reidentifyConfig = (new DeidentifyConfig())
         ->setInfoTypeTransformations($infoTypeTransformations);
 
+    // Build request
+    $request = (new ReidentifyContentRequest())
+        ->setParent($parent)
+        ->setReidentifyConfig($reidentifyConfig)
+        ->setInspectConfig($inspectConfig)
+        ->setItem($item);
+
     // Run request.
-    $response = $dlp->reidentifyContent($parent, [
-        'reidentifyConfig' => $reidentifyConfig,
-        'inspectConfig' => $inspectConfig,
-        'item' => $item
-    ]);
+    $response = $dlp->reidentifyContent($request);
 
     // Print the results.
     printf($response->getItem()->getValue());

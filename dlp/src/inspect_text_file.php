@@ -24,10 +24,11 @@
 namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_inspect_text_file]
-use Google\Cloud\Dlp\V2\DlpServiceClient;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
 use Google\Cloud\Dlp\V2\ContentItem;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
+use Google\Cloud\Dlp\V2\InspectContentRequest;
 use Google\Cloud\Dlp\V2\ByteContentItem;
 use Google\Cloud\Dlp\V2\ByteContentItem\BytesType;
 use Google\Cloud\Dlp\V2\Likelihood;
@@ -60,12 +61,14 @@ function inspect_text_file(string $projectId, string $filepath): void
         // Whether to include the matching string
         ->setIncludeQuote(true);
 
+    // Build request
+    $request = (new InspectContentRequest())
+        ->setParent($parent)
+        ->setItem($item)
+        ->setInspectConfig($inspectConfig);
+
     // Run request
-    $response = $dlp->inspectContent([
-        'parent' => $parent,
-        'inspectConfig' => $inspectConfig,
-        'item' => $item
-    ]);
+    $response = $dlp->inspectContent($request);
 
     // Print the results
     $findings = $response->getResult()->getFindings();
