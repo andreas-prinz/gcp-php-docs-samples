@@ -39,8 +39,7 @@ use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
 use Google\Cloud\Dlp\V2\InspectJobConfig;
 use Google\Cloud\Dlp\V2\Likelihood;
 use Google\Cloud\Dlp\V2\StorageConfig;
-use Google\Cloud\PubSub\Client\PubSubClient;
-use Google\Cloud\PubSub\TopicRequest;
+use Google\Cloud\PubSub\PubSubClient;
 
 /**
  * Inspect a BigQuery table , using Pub/Sub for job status notifications.
@@ -65,9 +64,7 @@ function inspect_bigquery(
     // Instantiate a client.
     $dlp = new DlpServiceClient();
     $pubsub = new PubSubClient();
-    $request = (new TopicRequest())
-        ->setName($topicId);
-    $topic = $pubsub->topic($request);
+    $topic = $pubsub->topic($topicId);
 
     // The infoTypes of information to match
     $personNameInfoType = (new InfoType())

@@ -39,8 +39,7 @@ use Google\Cloud\Dlp\V2\PrivacyMetric;
 use Google\Cloud\Dlp\V2\PrivacyMetric\KMapEstimationConfig;
 use Google\Cloud\Dlp\V2\PrivacyMetric\KMapEstimationConfig\TaggedField;
 use Google\Cloud\Dlp\V2\RiskAnalysisJobConfig;
-use Google\Cloud\PubSub\Client\PubSubClient;
-use Google\Cloud\PubSub\TopicRequest;
+use Google\Cloud\PubSub\PubSubClient;
 
 /**
  * Computes the k-map risk estimation of a column set in a Google BigQuery table.
@@ -73,9 +72,7 @@ function k_map(
     $pubsub = new PubSubClient([
         'projectId' => $callingProjectId,
     ]);
-    $request = (new TopicRequest())
-        ->setName($topicId);
-    $topic = $pubsub->topic($request);
+    $topic = $pubsub->topic($topicId);
 
     // Verify input
     if (count($infoTypes) != count($quasiIdNames)) {

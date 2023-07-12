@@ -36,8 +36,7 @@ use Google\Cloud\Dlp\V2\GetDlpJobRequest;
 use Google\Cloud\Dlp\V2\PrivacyMetric;
 use Google\Cloud\Dlp\V2\PrivacyMetric\LDiversityConfig;
 use Google\Cloud\Dlp\V2\RiskAnalysisJobConfig;
-use Google\Cloud\PubSub\Client\PubSubClient;
-use Google\Cloud\PubSub\TopicRequest;
+use Google\Cloud\PubSub\PubSubClient;
 
 /**
  * Computes the l-diversity of a column set in a Google BigQuery table.
@@ -68,9 +67,7 @@ function l_diversity(
     $pubsub = new PubSubClient([
         'projectId' => $callingProjectId,
     ]);
-    $request = (new TopicRequest())
-        ->setName($topicId);
-    $topic = $pubsub->topic($request);
+    $topic = $pubsub->topic($topicId);
 
     // Construct risk analysis config
     $quasiIds = array_map(
