@@ -24,13 +24,13 @@
 namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_inspect_text_file]
+use Google\Cloud\Dlp\V2\ByteContentItem;
+use Google\Cloud\Dlp\V2\ByteContentItem\BytesType;
 use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
 use Google\Cloud\Dlp\V2\ContentItem;
 use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
 use Google\Cloud\Dlp\V2\InspectContentRequest;
-use Google\Cloud\Dlp\V2\ByteContentItem;
-use Google\Cloud\Dlp\V2\ByteContentItem\BytesType;
 use Google\Cloud\Dlp\V2\Likelihood;
 
 /**

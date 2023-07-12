@@ -26,20 +26,20 @@ namespace Google\Cloud\Samples\Dlp;
 
 // [START dlp_create_trigger]
 use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
-use Google\Cloud\Dlp\V2\CreateJobTriggerRequest;
-use Google\Cloud\Dlp\V2\JobTrigger;
-use Google\Cloud\Dlp\V2\JobTrigger\Trigger;
-use Google\Cloud\Dlp\V2\JobTrigger\Status;
-use Google\Cloud\Dlp\V2\InspectConfig;
-use Google\Cloud\Dlp\V2\InspectJobConfig;
-use Google\Cloud\Dlp\V2\Schedule;
 use Google\Cloud\Dlp\V2\CloudStorageOptions;
 use Google\Cloud\Dlp\V2\CloudStorageOptions_FileSet;
+use Google\Cloud\Dlp\V2\CreateJobTriggerRequest;
+use Google\Cloud\Dlp\V2\InfoType;
+use Google\Cloud\Dlp\V2\InspectConfig;
+use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
+use Google\Cloud\Dlp\V2\InspectJobConfig;
+use Google\Cloud\Dlp\V2\JobTrigger;
+use Google\Cloud\Dlp\V2\JobTrigger\Status;
+use Google\Cloud\Dlp\V2\JobTrigger\Trigger;
+use Google\Cloud\Dlp\V2\Likelihood;
+use Google\Cloud\Dlp\V2\Schedule;
 use Google\Cloud\Dlp\V2\StorageConfig;
 use Google\Cloud\Dlp\V2\StorageConfig_TimespanConfig;
-use Google\Cloud\Dlp\V2\InfoType;
-use Google\Cloud\Dlp\V2\Likelihood;
-use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
 use Google\Protobuf\Duration;
 
 /**

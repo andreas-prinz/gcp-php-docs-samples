@@ -3,7 +3,6 @@
     "type": "project",
     "require": {
         "google/cloud-dlp": "^1.0.0",
-        "google/cloud-pubsub": "^1.11.1",
-        "google/gax": "dev-add-surface-version as 1.21.0"
+        "google/cloud-pubsub": "^1.11.1"
     }
 }

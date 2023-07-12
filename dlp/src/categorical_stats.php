@@ -25,18 +25,19 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_categorical_stats]
-use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
-use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
-use Google\Cloud\Dlp\V2\GetDlpJobRequest;
-use Google\Cloud\Dlp\V2\RiskAnalysisJobConfig;
-use Google\Cloud\Dlp\V2\BigQueryTable;
-use Google\Cloud\Dlp\V2\DlpJob\JobState;
 use Google\Cloud\Dlp\V2\Action;
 use Google\Cloud\Dlp\V2\Action\PublishToPubSub;
-use Google\Cloud\Dlp\V2\PrivacyMetric\CategoricalStatsConfig;
-use Google\Cloud\Dlp\V2\PrivacyMetric;
+use Google\Cloud\Dlp\V2\BigQueryTable;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
+use Google\Cloud\Dlp\V2\DlpJob\JobState;
 use Google\Cloud\Dlp\V2\FieldId;
-use Google\Cloud\PubSub\PubSubClient;
+use Google\Cloud\Dlp\V2\GetDlpJobRequest;
+use Google\Cloud\Dlp\V2\PrivacyMetric;
+use Google\Cloud\Dlp\V2\PrivacyMetric\CategoricalStatsConfig;
+use Google\Cloud\Dlp\V2\RiskAnalysisJobConfig;
+use Google\Cloud\PubSub\Client\PubSubClient;
+use Google\Cloud\PubSub\TopicRequest;
 
 /**
  * Computes risk metrics of a column of data in a Google BigQuery table.
@@ -65,7 +66,9 @@ function categorical_stats(
     $pubsub = new PubSubClient([
         'projectId' => $callingProjectId,
     ]);
-    $topic = $pubsub->topic($topicId);
+    $request = (new TopicRequest())
+        ->setName($topicId);
+    $topic = $pubsub->topic($request);
 
     // Construct risk analysis config
     $columnField = (new FieldId())

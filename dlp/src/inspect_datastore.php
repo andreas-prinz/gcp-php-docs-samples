@@ -25,20 +25,21 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_inspect_datastore]
-use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
-use Google\Cloud\Dlp\V2\DatastoreOptions;
-use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\Action;
 use Google\Cloud\Dlp\V2\Action\PublishToPubSub;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\DatastoreOptions;
+use Google\Cloud\Dlp\V2\DlpJob\JobState;
+use Google\Cloud\Dlp\V2\InfoType;
 use Google\Cloud\Dlp\V2\InspectConfig;
+use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
 use Google\Cloud\Dlp\V2\InspectJobConfig;
 use Google\Cloud\Dlp\V2\KindExpression;
+use Google\Cloud\Dlp\V2\Likelihood;
 use Google\Cloud\Dlp\V2\PartitionId;
 use Google\Cloud\Dlp\V2\StorageConfig;
-use Google\Cloud\Dlp\V2\Likelihood;
-use Google\Cloud\Dlp\V2\DlpJob\JobState;
-use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
-use Google\Cloud\PubSub\PubSubClient;
+use Google\Cloud\PubSub\Client\PubSubClient;
+use Google\Cloud\PubSub\TopicRequest;
 
 /**
  * Inspect Datastore, using Pub/Sub for job status notifications.
@@ -63,7 +64,9 @@ function inspect_datastore(
     // Instantiate clients
     $dlp = new DlpServiceClient();
     $pubsub = new PubSubClient();
-    $topic = $pubsub->topic($topicId);
+    $request = (new TopicRequest())
+        ->setName($topicId);
+    $topic = $pubsub->topic($request);
 
     // The infoTypes of information to match
     $personNameInfoType = (new InfoType())

@@ -26,9 +26,9 @@ namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_list_jobs]
 use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
-use Google\Cloud\Dlp\V2\ListDlpJobsRequest;
 use Google\Cloud\Dlp\V2\DlpJob\JobState;
 use Google\Cloud\Dlp\V2\DlpJobType;
+use Google\Cloud\Dlp\V2\ListDlpJobsRequest;
 
 /**
  * List Data Loss Prevention API jobs corresponding to a given filter.

@@ -25,21 +25,22 @@
 namespace Google\Cloud\Samples\Dlp;
 
 # [START dlp_inspect_bigquery]
-use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
-use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
-use Google\Cloud\Dlp\V2\GetDlpJobRequest;
-use Google\Cloud\Dlp\V2\BigQueryOptions;
-use Google\Cloud\Dlp\V2\InfoType;
-use Google\Cloud\Dlp\V2\InspectConfig;
-use Google\Cloud\Dlp\V2\StorageConfig;
-use Google\Cloud\Dlp\V2\BigQueryTable;
-use Google\Cloud\Dlp\V2\Likelihood;
-use Google\Cloud\Dlp\V2\DlpJob\JobState;
-use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
 use Google\Cloud\Dlp\V2\Action;
 use Google\Cloud\Dlp\V2\Action\PublishToPubSub;
+use Google\Cloud\Dlp\V2\BigQueryOptions;
+use Google\Cloud\Dlp\V2\BigQueryTable;
+use Google\Cloud\Dlp\V2\Client\DlpServiceClient;
+use Google\Cloud\Dlp\V2\CreateDlpJobRequest;
+use Google\Cloud\Dlp\V2\DlpJob\JobState;
+use Google\Cloud\Dlp\V2\GetDlpJobRequest;
+use Google\Cloud\Dlp\V2\InfoType;
+use Google\Cloud\Dlp\V2\InspectConfig;
+use Google\Cloud\Dlp\V2\InspectConfig\FindingLimits;
 use Google\Cloud\Dlp\V2\InspectJobConfig;
-use Google\Cloud\PubSub\PubSubClient;
+use Google\Cloud\Dlp\V2\Likelihood;
+use Google\Cloud\Dlp\V2\StorageConfig;
+use Google\Cloud\PubSub\Client\PubSubClient;
+use Google\Cloud\PubSub\TopicRequest;
 
 /**
  * Inspect a BigQuery table , using Pub/Sub for job status notifications.
@@ -64,7 +65,9 @@ function inspect_bigquery(
     // Instantiate a client.
     $dlp = new DlpServiceClient();
     $pubsub = new PubSubClient();
-    $topic = $pubsub->topic($topicId);
+    $request = (new TopicRequest())
+        ->setName($topicId);
+    $topic = $pubsub->topic($request);
 
     // The infoTypes of information to match
     $personNameInfoType = (new InfoType())
