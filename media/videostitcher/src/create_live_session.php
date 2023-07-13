@@ -25,7 +25,6 @@
 namespace Google\Cloud\Samples\Media\Stitcher;
 
 // [START videostitcher_create_live_session]
-use Google\Cloud\Video\Stitcher\V1\AdTag;
 use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
 use Google\Cloud\Video\Stitcher\V1\CreateLiveSessionRequest;
 use Google\Cloud\Video\Stitcher\V1\LiveConfig;
