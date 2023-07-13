@@ -25,9 +25,10 @@
 namespace Google\Cloud\Samples\Media\Stitcher;
 
 // [START videostitcher_update_cdn_key_akamai]
-use Google\Cloud\Video\Stitcher\V1\VideoStitcherServiceClient;
-use Google\Cloud\Video\Stitcher\V1\CdnKey;
+use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
 use Google\Cloud\Video\Stitcher\V1\AkamaiCdnKey;
+use Google\Cloud\Video\Stitcher\V1\CdnKey;
+use Google\Cloud\Video\Stitcher\V1\UpdateCdnKeyRequest;
 use Google\Protobuf\FieldMask;
 
 /**
@@ -63,7 +64,10 @@ function update_cdn_key_akamai(
     ]);
 
     // Run CDN key creation request
-    $response = $stitcherClient->updateCdnKey($cdnKey, $updateMask);
+    $request = (new UpdateCdnKeyRequest())
+        ->setCdnKey($cdnKey)
+        ->setUpdateMask($updateMask);
+    $response = $stitcherClient->updateCdnKey($request);
 
     // Print results
     printf('Updated CDN key: %s' . PHP_EOL, $response->getName());

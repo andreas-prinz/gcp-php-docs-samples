@@ -25,8 +25,9 @@
 namespace Google\Cloud\Samples\Media\Stitcher;
 
 // [START videostitcher_update_slate]
-use Google\Cloud\Video\Stitcher\V1\VideoStitcherServiceClient;
+use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
 use Google\Cloud\Video\Stitcher\V1\Slate;
+use Google\Cloud\Video\Stitcher\V1\UpdateSlateRequest;
 use Google\Protobuf\FieldMask;
 
 /**
@@ -55,7 +56,10 @@ function update_slate(
     ]);
 
     // Run slate update request
-    $response = $stitcherClient->updateSlate($slate, $updateMask);
+    $request = (new UpdateSlateRequest())
+        ->setSlate($slate)
+        ->setUpdateMask($updateMask);
+    $response = $stitcherClient->updateSlate($request);
 
     // Print results
     printf('Updated slate: %s' . PHP_EOL, $response->getName());
