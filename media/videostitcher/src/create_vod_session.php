@@ -28,6 +28,7 @@ namespace Google\Cloud\Samples\Media\Stitcher;
 use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
 use Google\Cloud\Video\Stitcher\V1\CreateVodSessionRequest;
 use Google\Cloud\Video\Stitcher\V1\VodSession;
+use Google\Cloud\Video\Stitcher\V1\AdTracking;
 
 /**
  * Creates a VOD session. VOD sessions are ephemeral resources that expire
@@ -54,6 +55,7 @@ function create_vod_session(
     $vodSession = new VodSession();
     $vodSession->setSourceUri($sourceUri);
     $vodSession->setAdTagUri($adTagUri);
+    $vodSession->setAdTracking(AdTracking::CLIENT);
 
     // Run VOD session creation request
     $request = (new CreateVodSessionRequest())
