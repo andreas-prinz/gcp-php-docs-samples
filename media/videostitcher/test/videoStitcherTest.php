@@ -152,17 +152,6 @@ class videoStitcherTest extends TestCase
         $this->assertStringContainsString(self::$slateName, $output);
     }
 
-    /** @depends testGetSlate */
-    public function testDeleteSlate()
-    {
-        $output = $this->runFunctionSnippet('delete_slate', [
-            self::$projectId,
-            self::$location,
-            self::$slateId
-        ]);
-        $this->assertStringContainsString('Deleted slate', $output);
-    }
-
     public function testCreateCloudCdnKey()
     {
         self::$cloudCdnKeyId = sprintf('php-test-cloud-cdn-key-%s-%s', uniqid(), time());
@@ -440,17 +429,9 @@ class videoStitcherTest extends TestCase
         $this->assertStringContainsString(self::$vodStitchDetailName, $output);
     }
 
+    /** @depends testCreateSlate */
     public function testCreateLiveSession()
     {
-        # Create a temporary slate for the live config (required)
-        $tempSlateId = sprintf('php-test-slate-%s-%s', uniqid(), time());
-        $this->runFunctionSnippet('create_slate', [
-            self::$projectId,
-            self::$location,
-            $tempSlateId,
-            self::$slateUri
-        ]);
-
         # Create a live config ID for the live session (requred)
         $tempLiveConfigId = sprintf('php-test-liveconfig-%s-%s', uniqid(), time());
         $output = $this->runFunctionSnippet('create_live_config', [
@@ -459,7 +440,7 @@ class videoStitcherTest extends TestCase
             $tempLiveConfigId,
             self::$liveUri,
             self::$liveAgTagUri,
-            $tempSlateId
+            self::$slateId
         ]);
         $this->assertStringContainsString($tempLiveConfigId, $output);
 
@@ -489,13 +470,6 @@ class videoStitcherTest extends TestCase
             self::$projectId,
             self::$location,
             $tempLiveConfigId
-        ]);
-
-        # Delete the temporary slate
-        $this->runFunctionSnippet('delete_slate', [
-            self::$projectId,
-            self::$location,
-            $tempSlateId
         ]);
     }
 
@@ -560,6 +534,17 @@ class videoStitcherTest extends TestCase
             self::$liveAdTagDetailId
         ]);
         $this->assertStringContainsString(self::$liveAdTagDetailName, $output);
+    }
+
+    /** @depends testGetSlate */
+    public function testDeleteSlate()
+    {
+        $output = $this->runFunctionSnippet('delete_slate', [
+            self::$projectId,
+            self::$location,
+            self::$slateId
+        ]);
+        $this->assertStringContainsString('Deleted slate', $output);
     }
 
     private static function deleteOldSlates(): void

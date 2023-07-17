@@ -50,22 +50,8 @@ function create_live_session(
 
     $parent = $stitcherClient->locationName($callingProjectId, $location);
 
-    $liveConfig = new LiveConfig();
-    $liveConfig->setSourceUri($sourceUri);
-    $liveConfig->setAdTagUri($adTagUri);
-
-    // Create the live config
-    $request = (new CreateLiveConfigRequest())
-        ->setParent($parent)
-        ->setLiveConfig($liveConfig)
-        ->setLiveConfigId($liveConfigId);
-    $operation = $stitcherClient->createLiveConfig($request);
-    $operation->pollUntilComplete();
-    $newLiveConfig = $operation->getResult();
-
     $liveSession = new LiveSession();
-    $liveSession->setLiveConfig($newLiveConfig);
-    $liveSession->setDefaultSlate($slateId);
+    $liveSession->setLiveConfig($liveConfigId);
 
     // Run live session creation request
     $request2 = (new CreateLiveSessionRequest())
