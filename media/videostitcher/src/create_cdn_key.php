@@ -80,10 +80,14 @@ function create_cdn_key(
         ->setParent($parent)
         ->setCdnKey($cdnKey)
         ->setCdnKeyId($cdnKeyId);
-    $response = $stitcherClient->createCdnKey($request);
+    $operation = $stitcherClient->createCdnKey($request);
+    $operation->pollUntilComplete();
+
+    /** @var CdnKey $cdnKey */
+    $cdnKey = $operation->getResult();
 
     // Print results
-    printf('CDN key: %s' . PHP_EOL, $response->getName());
+    printf('CDN key: %s' . PHP_EOL, $cdnKey->getName());
 }
 // [END videostitcher_create_cdn_key]
 

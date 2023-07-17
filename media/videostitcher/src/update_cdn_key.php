@@ -88,10 +88,14 @@ function update_cdn_key(
     $request = (new UpdateCdnKeyRequest())
         ->setCdnKey($cdnKey)
         ->setUpdateMask($updateMask);
-    $response = $stitcherClient->updateCdnKey($request);
+    $operation = $stitcherClient->updateCdnKey($request);
+    $operation->pollUntilComplete();
+
+    /** @var CdnKey */
+    $cdnKey = $operation->getResult();
 
     // Print results
-    printf('Updated CDN key: %s' . PHP_EOL, $response->getName());
+    printf('Updated CDN key: %s' . PHP_EOL, $cdnKey->getName());
 }
 // [END videostitcher_update_cdn_key]
 

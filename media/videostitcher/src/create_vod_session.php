@@ -55,7 +55,7 @@ function create_vod_session(
     $vodSession = new VodSession();
     $vodSession->setSourceUri($sourceUri);
     $vodSession->setAdTagUri($adTagUri);
-    $vodSession->setAdTracking(AdTracking::CLIENT);
+    $vodSession->setAdTracking(AdTracking::SERVER);
 
     // Run VOD session creation request
     $request = (new CreateVodSessionRequest())

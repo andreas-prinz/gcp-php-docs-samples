@@ -19,52 +19,39 @@
 /**
  * For instructions on how to run the samples:
  *
- * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/main/media/videostitcher/README.md
+ * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/media/videostitcher/README.md
  */
 
 namespace Google\Cloud\Samples\Media\Stitcher;
 
-// [START videostitcher_create_slate]
+// [START videostitcher_get_live_config]
 use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
-use Google\Cloud\Video\Stitcher\V1\CreateSlateRequest;
-use Google\Cloud\Video\Stitcher\V1\Slate;
+use Google\Cloud\Video\Stitcher\V1\GetLiveConfigRequest;
 
 /**
- * Creates a slate. A slate is displayed when ads are not available.
+ * Gets a live session.
  *
  * @param string $callingProjectId     The project ID to run the API call under
- * @param string $location             The location of the slate
- * @param string $slateId              The name of the slate to be created
- * @param string $slateUri             The public URI for an MP4 video with at least one audio track
+ * @param string $location             The location of the live config
+ * @param string $liveConfigId             The ID of the live config
  */
-function create_slate(
+function get_live_config(
     string $callingProjectId,
     string $location,
-    string $slateId,
-    string $slateUri
+    string $liveConfigId
 ): void {
     // Instantiate a client.
     $stitcherClient = new VideoStitcherServiceClient();
 
-    $parent = $stitcherClient->locationName($callingProjectId, $location);
-    $slate = new Slate();
-    $slate->setUri($slateUri);
-
-    // Run slate creation request
-    $request = (new CreateSlateRequest())
-        ->setParent($parent)
-        ->setSlateId($slateId)
-        ->setSlate($slate);
-    $operation = $stitcherClient->createSlate($request);
-    $operation->pollUntilComplete();
-
-    /** @var Slate $slate */
-    $slate = $operation->getResult();
+    $formattedName = $stitcherClient->liveConfigName($callingProjectId, $location, $liveConfigId);
+    $request = (new GetLiveConfigRequest())
+        ->setName($formattedName);
+    $config = $stitcherClient->getLiveConfig($request);
 
     // Print results
-    printf('Slate: %s' . PHP_EOL, $slate->getName());
+    printf('Live config: %s' . PHP_EOL, $config->getName());
 }
-// [END videostitcher_create_slate]
+// [END videostitcher_get_live_config]
 
 // The following 2 lines are only needed to run the samples
 require_once __DIR__ . '/../../../testing/sample_helpers.php';

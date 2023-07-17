@@ -442,7 +442,7 @@ class videoStitcherTest extends TestCase
 
     public function testCreateLiveSession()
     {
-        # Create a temporary slate for the live session (required)
+        # Create a temporary slate for the live config (required)
         $tempSlateId = sprintf('php-test-slate-%s-%s', uniqid(), time());
         $this->runFunctionSnippet('create_slate', [
             self::$projectId,
@@ -451,6 +451,25 @@ class videoStitcherTest extends TestCase
             self::$slateUri
         ]);
 
+        # Create a live config ID for the live session (requred)
+        $tempLiveConfigId = sprintf('php-test-liveconfig-%s-%s', uniqid(), time());
+        $output = $this->runFunctionSnippet('create_live_config', [
+            self::$projectId,
+            self::$location,
+            $tempLiveConfigId,
+            self::$liveUri,
+            self::$liveAgTagUri,
+            $tempSlateId
+        ]);
+        $this->assertStringContainsString($tempLiveConfigId, $output);
+
+        $output = $this->runFunctionSnippet('get_live_config', [
+            self::$projectId,
+            self::$location,
+            $tempLiveConfigId,
+        ]);
+        $this->assertStringContainsString($tempLiveConfigId, $output);
+
         # API returns project number rather than project ID so
         # don't include that in $liveSessionName since we don't have it
         self::$liveSessionName = sprintf('/locations/%s/liveSessions/', self::$location);
@@ -458,14 +477,19 @@ class videoStitcherTest extends TestCase
         $output = $this->runFunctionSnippet('create_live_session', [
             self::$projectId,
             self::$location,
-            self::$liveUri,
-            self::$liveAgTagUri,
-            $tempSlateId
+            self::$liveSessionName
         ]);
         $this->assertStringContainsString(self::$liveSessionName, $output);
         self::$liveSessionId = explode('/', $output);
         self::$liveSessionId = trim(self::$liveSessionId[(count(self::$liveSessionId) - 1)]);
         self::$liveSessionName = sprintf('/locations/%s/liveSessions/%s', self::$location, self::$liveSessionId);
+
+        # Delete the live config
+        $this->runFunctionSnippet('delete_live_config', [
+            self::$projectId,
+            self::$location,
+            $tempLiveConfigId
+        ]);
 
         # Delete the temporary slate
         $this->runFunctionSnippet('delete_slate', [

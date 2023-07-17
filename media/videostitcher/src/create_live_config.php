@@ -24,12 +24,12 @@
 
 namespace Google\Cloud\Samples\Media\Stitcher;
 
-// [START videostitcher_create_live_session]
+// [START videostitcher_create_live_config]
+use Google\Cloud\Video\Stitcher\V1\AdTracking;
 use Google\Cloud\Video\Stitcher\V1\Client\VideoStitcherServiceClient;
 use Google\Cloud\Video\Stitcher\V1\CreateLiveConfigRequest;
-use Google\Cloud\Video\Stitcher\V1\CreateLiveSessionRequest;
 use Google\Cloud\Video\Stitcher\V1\LiveConfig;
-use Google\Cloud\Video\Stitcher\V1\LiveSession;
+use Google\Cloud\Video\Stitcher\V1\LiveConfig\StitchingPolicy;
 
 /**
  * Creates a live session. Live sessions are ephemeral resources that expire
@@ -37,13 +37,23 @@ use Google\Cloud\Video\Stitcher\V1\LiveSession;
  *
  * @param string $callingProjectId     The project ID to run the API call under
  * @param string $location             The location of the session
- * @param string $liveConfigId         An existing user-defined live config ID
- *                                     (@see VideoStitcherServiceClient::createLiveConfig)
+ * @param string $liveConfigId         The user-defined live config ID
+ * @param string $sourceUri            Uri of the media to stitch; this URI must
+ *                                     reference either an MPEG-DASH manifest
+ *                                     (.mpd) file or an M3U playlist manifest
+ *                                     (.m3u8) file.
+ * @param string $adTagUri             The Uri of the ad tag
+ * @param string $slateId              The user-defined slate ID of the default
+ *                                     slate to use when no slates are specified
+ *                                     in an ad break's message
  */
-function create_live_session(
+function create_live_config(
     string $callingProjectId,
     string $location,
-    string $liveConfigId
+    string $liveConfigId,
+    string $sourceUri,
+    string $adTagUri,
+    string $slateId
 ): void {
     // Instantiate a client.
     $stitcherClient = new VideoStitcherServiceClient();
@@ -53,30 +63,25 @@ function create_live_session(
     $liveConfig = new LiveConfig();
     $liveConfig->setSourceUri($sourceUri);
     $liveConfig->setAdTagUri($adTagUri);
+    $liveConfig->setDefaultSlate($slateId);
+    $liveConfig->setAdTracking(AdTracking::SERVER);
+    $liveConfig->setStitchingPolicy(StitchingPolicy::CUT_CURRENT);
 
     // Create the live config
     $request = (new CreateLiveConfigRequest())
         ->setParent($parent)
         ->setLiveConfig($liveConfig)
         ->setLiveConfigId($liveConfigId);
+
+    // Call the API
     $operation = $stitcherClient->createLiveConfig($request);
     $operation->pollUntilComplete();
-    $newLiveConfig = $operation->getResult();
-
-    $liveSession = new LiveSession();
-    $liveSession->setLiveConfig($newLiveConfig);
-    $liveSession->setDefaultSlate($slateId);
-
-    // Run live session creation request
-    $request2 = (new CreateLiveSessionRequest())
-        ->setParent($parent)
-        ->setLiveSession($liveSession);
-    $response = $stitcherClient->createLiveSession($request2);
+    $liveConfig = $operation->getResult();
 
     // Print results
-    printf('Live session: %s' . PHP_EOL, $response->getName());
+    printf('Live session: %s' . PHP_EOL, $liveConfig->getName());
 }
-// [END videostitcher_create_live_session]
+// [END videostitcher_create_live_config]
 
 // The following 2 lines are only needed to run the samples
 require_once __DIR__ . '/../../../testing/sample_helpers.php';
